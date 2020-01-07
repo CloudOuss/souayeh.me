@@ -21,7 +21,12 @@ stages:
       dotnetSdkVersion: '3.1.100'
 
     steps:
-    - task: DotNetCoreInstaller@1
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk for sonarcloud'
+      inputs:
+        packageType: sdk
+        version: 2.2.203
+    - task: UseDotNet@2
       displayName: 'Use .NET Core SDK $(dotnetSdkVersion)'
       inputs:
         packageType: sdk
@@ -31,8 +36,6 @@ stages:
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
-    - task: UseDotNet@2
-      displayName: 'Use .NET Core sdk 2.2 for sonarcloud'
     - task: SonarCloudPrepare@1
       displayName: 'Prepare SonarCloud analysis'
       inputs:
