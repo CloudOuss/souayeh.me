@@ -31,6 +31,24 @@ stages:
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
+    - task: SonarCloudPrepare@1
+      displayName: 'Prepare SonarCloud analysis'
+      inputs:
+        SonarCloud: 'sonarcloud-static-analysis'
+        organization: '$(SonarOrganization)'
+        projectKey: '$(SonarProjectKey)'
+        projectName: '$(SonarProjectName)'
+        projectVersion: '$(Build.BuildNumber)'
+        extraProperties: |
+          # sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml 
+          sonar.exclusions=**/wwwroot/assets/scss/vendor/**
+      condition: |
+        and
+        (
+          succeeded(),
+          eq(variables['Build.Reason'], 'PullRequest'),
+          eq(variables['System.PullRequest.TargetBranch'], 'master')
+        )
     - task: DotNetCoreCLI@2
       displayName: 'Build the project - $(buildConfiguration)'
       inputs:
@@ -45,6 +63,10 @@ stages:
         publishWebProjects: false
         arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
         zipAfterPublish: true
+    - task: SonarCloudAnalyze@1
+      displayName: 'Run SonarCloud code analysis'
+    - task: SonarCloudPublish@1
+      displayName: 'Publish SonarCloud quality gate results'
     - task: WhiteSource Bolt@19
       displayName: 'Run WhiteSource Bolt'
       inputs:
