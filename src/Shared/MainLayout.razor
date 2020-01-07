@@ -1,0 +1,24 @@
+﻿@inherits LayoutComponentBase
+
+ <div id="page-container">
+   <div id="content-wrap">
+     <div class="main-menu">
+        <MainMenu />
+    </div>
+
+    <div class="moblie-menu">
+        <MobileMenu />
+    </div>
+
+    <div class="main-header">
+        <MainHeader />
+    </div>
+
+    <div class="main">
+        @Body
+    </div>
+   </div>
+   <footer id="footer">
+       <MainFooter />
+   </footer>
+ </div>
