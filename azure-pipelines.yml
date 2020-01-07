@@ -2,8 +2,15 @@ trigger:
 - master
 
 variables:
-  buildConfiguration: 'Release'
-  releaseBranchName: 'master'
+- group: SonarVariables
+- name: webRootDir
+  value: 'src/'
+- name: dotnetSdkVersion
+  value: '3.1.100'
+- name: buildConfiguration
+  value: 'Release'
+- name: releaseBranchName
+  value: 'master'
 
 stages:
 - stage: Build
@@ -15,13 +22,6 @@ stages:
       vmImage: 'ubuntu-latest'
       demands:
         - npm
-    variables:
-    - group: SonarVariables
-    - name: webRootDir
-      value: 'src/'
-    - name: dotnetSdkVersion
-      value: '3.1.100'
-
     steps:
     - task: UseDotNet@2
       displayName: 'Use .NET Core sdk for sonarcloud'
@@ -41,7 +41,7 @@ stages:
     - task: SonarCloudPrepare@1
       displayName: 'Prepare SonarCloud analysis'
       inputs:
-        SonarCloud: 'sonarcloud-static-analysis'
+        SonarCloud: '$(SonarServiceEndpoint)'
         organization: '$(SonarOrganization)'
         scannerMode: 'MSBuild'
         projectKey: '$(SonarProjectKey)'
