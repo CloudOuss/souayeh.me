@@ -5,7 +5,7 @@ var sass = require('gulp-sass');
 var sourcemaps = require('gulp-sourcemaps');
 var autoprefixer = require('gulp-autoprefixer');
 var notify = require('gulp-notify');
-var cssnano = require('gulp-cssnano');
+var cssminify = require('gulp-clean-css');
 var plumber = require('gulp-plumber');
 
 var scssFiles = ['./wwwroot/assets/scss/**/*.scss'];
@@ -30,7 +30,10 @@ gulp.task('style-build', function () {
     .pipe(sass())
     .on('error', onError)
     .pipe(autoprefixer('last 4 version'))
-    .pipe(cssnano())
+    .pipe(cssminify({debug: true}, (details) => {
+      console.log(`${details.name}: ${details.stats.originalSize}`);
+      console.log(`${details.name}: ${details.stats.minifiedSize}`);
+    }))
     .pipe(gulp.dest(pathStyleDest));
 });
 
