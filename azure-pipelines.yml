@@ -3,12 +3,13 @@ trigger:
 
 variables:
   buildConfiguration: 'Release'
+  releaseBranchName: 'master'
 
 stages:
-- stage: 'Build'
+- stage: Build
   displayName: 'Build app'
   jobs: 
-  - job: 'Build'
+  - job: Build
     displayName: 'Build job'
     pool:
       vmImage: 'ubuntu-latest'
@@ -52,3 +53,19 @@ stages:
     - task: PublishBuildArtifacts@1
       displayName: 'Publish Artifact: drop'
       condition: succeeded()
+
+- stage: Deploy
+  displayName: 'Deploy to website'
+  dependsOn: Build
+  condition: |
+    and
+    (
+      succeeded(),
+      eq(variables['Build.SourceBranchName'], variables['releaseBranchName'])
+    )
+  jobs:
+  - job: Placeholder
+    displayName: 'Placeholder for release'
+    steps:
+      - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)"'
+        displayName: 'echo placeholder'
