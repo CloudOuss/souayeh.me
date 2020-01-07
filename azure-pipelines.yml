@@ -53,7 +53,12 @@ stages:
         (
           succeeded(),
           eq(variables['Build.Reason'], 'PullRequest'),
-          eq(variables['System.PullRequest.TargetBranch'], 'master')
+          eq(variables['System.PullRequest.TargetBranch'], variables['releaseBranchName'])
+        )
+        or
+        (
+          succeeded(),
+          eq(variables['Build.SourceBranchName'], variables['releaseBranchName'])
         )
     - task: DotNetCoreCLI@2
       displayName: 'Build the project - $(buildConfiguration)'
@@ -76,7 +81,12 @@ stages:
         (
           succeeded(),
           eq(variables['Build.Reason'], 'PullRequest'),
-          eq(variables['System.PullRequest.TargetBranch'], 'master')
+          eq(variables['System.PullRequest.TargetBranch'], variables['releaseBranchName'])
+        )
+        or
+        (
+          succeeded(),
+          eq(variables['Build.SourceBranchName'], variables['releaseBranchName'])
         )
     - task: SonarCloudPublish@1
       displayName: 'Publish SonarCloud quality gate results'
@@ -85,7 +95,12 @@ stages:
         (
           succeeded(),
           eq(variables['Build.Reason'], 'PullRequest'),
-          eq(variables['System.PullRequest.TargetBranch'], 'master')
+          eq(variables['System.PullRequest.TargetBranch'], variables['releaseBranchName'])
+        )
+        or
+        (
+          succeeded(),
+          eq(variables['Build.SourceBranchName'], variables['releaseBranchName'])
         )
     - task: WhiteSource Bolt@19
       displayName: 'Run WhiteSource Bolt'
