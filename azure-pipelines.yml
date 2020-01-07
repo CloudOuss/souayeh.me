@@ -41,12 +41,13 @@ stages:
     - task: SonarCloudPrepare@1
       displayName: 'Prepare SonarCloud analysis'
       inputs:
-        SonarCloud: '$(SonarServiceEndpoint)'
+        SonarCloud: 'sonarcloud-static-analysis'
         organization: '$(SonarOrganization)'
+        scannerMode: 'MSBuild'
         projectKey: '$(SonarProjectKey)'
         projectName: '$(SonarProjectName)'
         projectVersion: '$(Build.BuildNumber)'
-        extraProperties: sonar.exclusions=**/wwwroot/assets/scss/vendor/**
+        extraProperties: 'sonar.exclusions=**/wwwroot/assets/scss/vendor/**'
       condition: |
         and
         (
