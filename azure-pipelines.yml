@@ -15,10 +15,12 @@ stages:
       vmImage: 'ubuntu-latest'
       demands:
         - npm
-
     variables:
-      webRootDir: src/
-      dotnetSdkVersion: '3.1.100'
+    - group: SonarVariables
+    - name: 'webRootDir'
+      value: src/
+    - name: 'dotnetSdkVersion'
+      value: '3.1.100'
 
     steps:
     - task: UseDotNet@2
@@ -39,13 +41,12 @@ stages:
     - task: SonarCloudPrepare@1
       displayName: 'Prepare SonarCloud analysis'
       inputs:
-        SonarCloud: 'sonarcloud-static-analysis'
+        SonarCloud: '$(SonarServiceEndpoint)'
         organization: '$(SonarOrganization)'
         projectKey: '$(SonarProjectKey)'
         projectName: '$(SonarProjectName)'
         projectVersion: '$(Build.BuildNumber)'
-        extraProperties: |
-          sonar.exclusions=**/wwwroot/assets/scss/vendor/**
+        extraProperties: sonar.exclusions=**/wwwroot/assets/scss/vendor/**
       condition: |
         and
         (
