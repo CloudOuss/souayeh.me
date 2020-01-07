@@ -31,6 +31,8 @@ stages:
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
+    - task: UseDotNet@2
+      displayName: 'Use .NET Core sdk 2.2 for sonarcloud'
     - task: SonarCloudPrepare@1
       displayName: 'Prepare SonarCloud analysis'
       inputs:
