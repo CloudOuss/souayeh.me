@@ -17,9 +17,9 @@ stages:
         - npm
     variables:
     - group: SonarVariables
-    - name: 'webRootDir'
-      value: src/
-    - name: 'dotnetSdkVersion'
+    - name: webRootDir
+      value: 'src/'
+    - name: dotnetSdkVersion
       value: '3.1.100'
 
     steps:
@@ -70,8 +70,22 @@ stages:
         zipAfterPublish: true
     - task: SonarCloudAnalyze@1
       displayName: 'Run SonarCloud code analysis'
+      condition: |
+        and
+        (
+          succeeded(),
+          eq(variables['Build.Reason'], 'PullRequest'),
+          eq(variables['System.PullRequest.TargetBranch'], 'master')
+        )
     - task: SonarCloudPublish@1
       displayName: 'Publish SonarCloud quality gate results'
+      condition: |
+        and
+        (
+          succeeded(),
+          eq(variables['Build.Reason'], 'PullRequest'),
+          eq(variables['System.PullRequest.TargetBranch'], 'master')
+        )
     - task: WhiteSource Bolt@19
       displayName: 'Run WhiteSource Bolt'
       inputs:
