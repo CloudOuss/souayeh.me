@@ -40,7 +40,6 @@ stages:
         projectName: '$(SonarProjectName)'
         projectVersion: '$(Build.BuildNumber)'
         extraProperties: |
-          # sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/TestResults/Coverage/coverage.opencover.xml 
           sonar.exclusions=**/wwwroot/assets/scss/vendor/**
       condition: |
         and
